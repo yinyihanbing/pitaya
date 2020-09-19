@@ -61,9 +61,11 @@ func ExtractSpan(ctx context.Context) (opentracing.SpanContext, error) {
 				return nil, err
 			}
 			tracer := opentracing.GlobalTracer()
-			spanCtx, err = tracer.Extract(opentracing.TextMap, carrier)
-			if err != nil {
-				return nil, err
+			if tracer != nil { // lhb
+				spanCtx, err = tracer.Extract(opentracing.TextMap, carrier)
+				if err != nil {
+					return nil, err
+				}
 			}
 		} else {
 			return nil, nil
