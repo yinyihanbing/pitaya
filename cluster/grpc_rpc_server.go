@@ -57,7 +57,11 @@ func (gs *GRPCServer) Init() error {
 	if err != nil {
 		return err
 	}
-	gs.grpcSv = grpc.NewServer()
+
+	maxRecvSize := gs.config.GetInt("pitaya.cluster.rpc.server.grpc.maxRecvSize")
+	maxSendSize := gs.config.GetInt("pitaya.cluster.rpc.server.grpc.maxSendSize")
+
+	gs.grpcSv = grpc.NewServer(grpc.MaxRecvMsgSize(maxRecvSize), grpc.MaxSendMsgSize(maxSendSize))
 	protos.RegisterPitayaServer(gs.grpcSv, gs.pitayaServer)
 	go gs.grpcSv.Serve(lis)
 	return nil
